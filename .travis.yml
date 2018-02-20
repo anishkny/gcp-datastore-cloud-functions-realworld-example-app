@@ -6,6 +6,8 @@ node_js:
 before_script:
   - echo $GOOGLE_APPLICATION_CREDENTIALS_BASE64 | base64 --decode --ignore-garbage > $GOOGLE_APPLICATION_CREDENTIALS
 
+script: true
+
 after_script:
   - npm install coveralls
   - cat ./coverage/lcov.info | npx coveralls
