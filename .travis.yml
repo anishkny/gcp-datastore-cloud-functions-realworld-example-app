@@ -1,4 +1,5 @@
 language: node_js
+
 node_js:
   - 8
 
@@ -8,3 +9,20 @@ before_script:
 after_script:
   - npm install coveralls
   - cat ./coverage/lcov.info | npx coveralls
+
+before_deploy:
+  - curl https://sdk.cloud.google.com | bash
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud version
+  - gcloud components install beta
+  - gcloud components update
+  - gcloud config set project $GCP_PROJECT_ID
+  - gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS &> /dev/null
+
+deploy:
+  - provider: script
+    script:
+      - npm run deploy
+    skip_cleanup: true
+    on:
+      branch: master
