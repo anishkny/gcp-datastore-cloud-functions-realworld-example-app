@@ -5,24 +5,18 @@ node_js:
 
 before_script:
   - echo $GOOGLE_APPLICATION_CREDENTIALS_BASE64 | base64 --decode --ignore-garbage > $GOOGLE_APPLICATION_CREDENTIALS
-
-script: true
+  - (curl https://sdk.cloud.google.com | bash) &> /dev/null
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud version
+  - gcloud config set project $GCP_PROJECT_ID
 
 after_script:
   - npm install coveralls
   - cat ./coverage/lcov.info | npx coveralls
 
 before_deploy:
-  - #export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
-  - #echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-  - #curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-  - #sudo apt-get update && sudo apt-get install google-cloud-sdk
-  - (curl https://sdk.cloud.google.com | bash) &> `mktemp`
-  - source $HOME/google-cloud-sdk/path.bash.inc
-  - gcloud version
   - gcloud components install beta
   - gcloud components update
-  - gcloud config set project $GCP_PROJECT_ID
   - gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS &> /dev/null
 
 deploy:
