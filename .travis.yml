@@ -24,5 +24,3 @@ deploy:
     script:
       - npm run deploy
     skip_cleanup: true
-    on:
-      branch: master
