@@ -11,8 +11,12 @@ after_script:
   - cat ./coverage/lcov.info | npx coveralls
 
 before_deploy:
-  - curl https://sdk.cloud.google.com | bash
-  - source $HOME/google-cloud-sdk/path.bash.inc
+  - export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+  - echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+  - curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+  - sudo apt-get update && sudo apt-get install google-cloud-sdk
+  - #curl https://sdk.cloud.google.com | bash
+  - #source $HOME/google-cloud-sdk/path.bash.inc
   - gcloud version
   - gcloud components install beta
   - gcloud components update
